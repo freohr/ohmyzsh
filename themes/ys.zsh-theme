@@ -39,13 +39,12 @@ ys_hg_prompt_info() {
 	fi
 }
 
-# Virtualenv
-local venv_info='$(virtenv_prompt)'
-YS_THEME_VIRTUALENV_PROMPT_PREFIX=" %{$fg[green]%}"
-YS_THEME_VIRTUALENV_PROMPT_SUFFIX=" %{$reset_color%}%"
-virtenv_prompt() {
-	[[ -n ${VIRTUAL_ENV} ]] || return
-	echo "${YS_THEME_VIRTUALENV_PROMPT_PREFIX}${VIRTUAL_ENV:t}${YS_THEME_VIRTUALENV_PROMPT_SUFFIX}"
+# VirtualEnv info
+local venv_info='$(ys_venv_prompt_info)'
+ys_venv_prompt_info(){
+    type virtualenv_prompt_info 2>&1 > /dev/null || return
+    VENV_INFO=$(virtualenv_prompt_info)
+    [ -z ${VENV_INFO} ] || echo "${VENV_INFO} " && return
 }
 
 local exit_code="%(?,,C:%{$fg[red]%}%?%{$reset_color%})"
@@ -62,6 +61,7 @@ local exit_code="%(?,,C:%{$fg[red]%}%?%{$reset_color%})"
 PROMPT="
 %{$terminfo[bold]$fg[blue]%}#%{$reset_color%} \
 %(#,%{$bg[yellow]%}%{$fg[black]%}%n%{$reset_color%},%{$fg[cyan]%}%n) \
+%{$fg[blue]%}$venv_info\
 %{$my_gray%}@ \
 %{$fg[green]%}%m \
 %{$my_gray%}in \
