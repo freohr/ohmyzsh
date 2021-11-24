@@ -39,6 +39,13 @@ ys_hg_prompt_info() {
 	fi
 }
 
+# Kubectl context info
+local kc_info='$(ys_kc_prompt_info)'
+ys_kc_prompt_info() {
+    type kc_context_prompt_info 2>&1 > /dev/null || return
+    echo "$(kc_context_prompt_info) "
+}
+
 # VirtualEnv info
 local venv_info='$(ys_venv_prompt_info)'
 ys_venv_prompt_info(){
@@ -46,6 +53,7 @@ ys_venv_prompt_info(){
     VENV_INFO=$(virtualenv_prompt_info)
     [ -z ${VENV_INFO} ] || echo "${VENV_INFO} " && return
 }
+
 
 local exit_code="%(?,,C:%{$fg[red]%}%?%{$reset_color%})"
 
@@ -61,6 +69,7 @@ local exit_code="%(?,,C:%{$fg[red]%}%?%{$reset_color%})"
 PROMPT="
 %{$terminfo[bold]$fg[blue]%}#%{$reset_color%} \
 %(#,%{$bg[yellow]%}%{$fg[black]%}%n%{$reset_color%},%{$fg[cyan]%}%n) \
+%{$fg[magenta]%}$kc_info\
 %{$fg[blue]%}$venv_info\
 %{$my_gray%}@ \
 %{$fg[green]%}%m \
